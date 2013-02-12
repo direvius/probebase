@@ -12,32 +12,10 @@ from optparse import OptionParser
 import string
 
 
-class App(object):
-    '''Application class. Parse options and serve requests'''
-    def __init__(self, *probes):
-        self.opts = self.parser_init().parse_args()[0]
-        self.probes = probes
-        self.logger = logging.getLogger()
-        if self.opts.verbose:
-            log_level = logging.DEBUG
-        else:
-            log_level = logging.INFO
-        self.logger.setLevel(log_level)
-        # file logging
-        fh = logging.FileHandler(self.opts.logfile)
-        fh.setLevel(log_level)
-        formatter = logging.Formatter(
-            '%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
-        fh.setFormatter(formatter)
-        self.logger.addHandler(fh)
-        # console logging
-        if self.opts.interactive:
-            sh = logging.StreamHandler()
-            sh.setLevel(log_level)
-            self.logger.addHandler(sh)
-
-    def parser_init(self):
-        '''parse command line options'''
+class AppBuilder(object):
+    @staticmethod
+    def default_parser():
+        '''get default command line options parser'''
         argparser = OptionParser()
 
         argparser.add_option('-l', '--log',
@@ -97,6 +75,42 @@ class App(object):
             default=False
             )
         return argparser
+
+    def __init__(self, *probes):
+        self.probes = probes
+        self.argparser = AppBuilder.default_parser()
+
+    def add_option(self, *args, **kw_args):
+        self.argparser.add_option(*args, **kw_args)
+        return self
+
+    def create(self):
+        return App(self, self.argparser.parse_args()[0], self.probes)
+
+
+class App(object):
+    '''Application class. Parse options and serve requests'''
+    def __init__(self, opts, *probes):
+        self.opts = opts
+        self.probes = probes
+        self.logger = logging.getLogger()
+        if self.opts.verbose:
+            log_level = logging.DEBUG
+        else:
+            log_level = logging.INFO
+        self.logger.setLevel(log_level)
+        # file logging
+        fh = logging.FileHandler(self.opts.logfile)
+        fh.setLevel(log_level)
+        formatter = logging.Formatter(
+            '%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
+        fh.setFormatter(formatter)
+        self.logger.addHandler(fh)
+        # console logging
+        if self.opts.interactive:
+            sh = logging.StreamHandler()
+            sh.setLevel(log_level)
+            self.logger.addHandler(sh)
 
     def launch(self):
         if self.opts.interactive:
