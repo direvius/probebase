@@ -8,7 +8,7 @@ class TrackerManager(object):
     '''Manages process information collection for multiple processes'''
     LOG = logging.getLogger('pt.tracker_manager')
 
-    def __init__(self, interval, yabs_host):
+    def __init__(self, interval):
         TrackerManager.LOG.debug(
             "Initializing TrackerManager with interval = %s",
             interval)
@@ -22,9 +22,9 @@ class TrackerManager(object):
         '''Add listener that will receive metrics'''
         self.listeners.append(listener)
 
-    def add_probe(self, probe):
+    def add_probes(self, probes):
         '''Add probe that will collect metrics'''
-        self.probes.append(probe)
+        self.probes.append(probes)
 
     def tracking_job(self):
         '''a job that monitors'''
