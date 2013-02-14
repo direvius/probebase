@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from apscheduler.scheduler import Scheduler
+from itertools import chain
 import logging
 
 
@@ -23,11 +24,13 @@ class TrackerManager(object):
 
     def add_probes(self, probes):
         '''Add probe that will collect metrics'''
-        self.probes.append(probes)
+        self.probes.extend(probes)
 
     def tracking_job(self):
         '''a job that monitors'''
-        results = [probe() for probe in self.probes]
+        results = []
+        for probe in self.probes:
+            results.extend(probe())
         self.submit(results)
 
     def submit(self, results):

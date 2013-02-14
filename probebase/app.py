@@ -48,7 +48,7 @@ class AppBuilder(object):
         argparser.add_option('-P', '--graphite-prefix',
             help='graphite prefix',
             dest='graphite_prefix',
-            default='five_sec.collectd.%s.p2p' % hostname
+            default='five_sec.%s' % hostname
             )
         argparser.add_option("-g", "--use-graphite",
             help="report metrics to graphite",
@@ -85,12 +85,12 @@ class AppBuilder(object):
         return self
 
     def create(self):
-        return App(self, self.argparser.parse_args()[0], self.probes)
+        return App(self.argparser.parse_args()[0], self.probes)
 
 
 class App(object):
     '''Application class. Parse options and serve requests'''
-    def __init__(self, opts, *probes):
+    def __init__(self, opts, probes):
         self.opts = opts
         self.probes = probes
         self.logger = logging.getLogger()
@@ -128,7 +128,7 @@ class App(object):
         self.t_m = TrackerManager(int(self.opts.interval))
         # add listeners
         if(self.opts.log_enabled):
-            self.t_m.add_listener(LoggerListener("metrics"))
+            self.t_m.add_listener(LoggerListener(self.opts.graphite_prefix))
         if self.opts.graphite:
             for address in self.opts.graphite_address.split(','):
                 self.t_m.add_listener(

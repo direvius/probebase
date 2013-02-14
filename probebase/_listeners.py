@@ -6,14 +6,15 @@ from threading import Thread
 
 class LoggerListener(object):
     '''Listener that writes metrics to log'''
-    def __init__(self, name):
-        self.logger = logging.getLogger(name)
+    def __init__(self, prefix):
+        self.prefix = prefix
+        self.logger = logging.getLogger("metrics")
 
     def submit(self, results):
         '''publish results to log'''
         for metric, value, timestamp in results:
             self.logger.info(
-                "%s\t%s\t%d" % (metric, value, timestamp))
+                "%s.%s\t%s\t%d" % (self.prefix, metric, value, timestamp))
 
 
 class GraphiteListener(object):
