@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from apscheduler.scheduler import Scheduler
-from time import time
 import logging
 
 
@@ -34,4 +33,4 @@ class TrackerManager(object):
     def submit(self, results):
         '''publish results to listeners'''
         for listener in self.listeners:
-            listener.submit(results, time())
+            listener.submit(results)
