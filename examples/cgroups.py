@@ -9,13 +9,13 @@ CGROUPS_PREFIX_COUNT = len(CGROUPS_DIR.split('/'))
 CGROUPS_STAT = "memory.stat"
 
 
-def process_memory_file(filename):
+def process_memory_file(dirname, filename):
     result = []
-    prefix = '.'.join(filename.split('/')[CGROUPS_PREFIX_COUNT:])
-    with open(filename, 'r') as memoryfile:
+    prefix = '.'.join(dirname.split('/')[CGROUPS_PREFIX_COUNT:])
+    with open("%s/%s" % (dirname, filename), 'r') as memoryfile:
         for line in memoryfile.readlines():
             metric, value = line.split()
-            result.append(("%s.%s" % (prefix, metric), value, int(time())))
+            result.append(("cgroups.memory.%s.%s" % (prefix, metric), value, int(time())))
     return result
 
 
@@ -24,7 +24,7 @@ def probe_cgroups_memory():
     for dirname, dirnames, filenames in walk(CGROUPS_DIR):
         for filename in filenames:
             if filename == CGROUPS_STAT:
-                result.extend(process_memory_file("%s/%s" % (dirname, filename)))
+                result.extend(process_memory_file(dirname, filename))
     return result
 
 
