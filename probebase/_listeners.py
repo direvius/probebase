@@ -32,13 +32,13 @@ class GraphiteListener(object):
     def _submit_task(self, results):
         '''result submit task for threaded submitter'''
         try:
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-                sock.connect((self.address, int(self.port)))
-                for metric, value, timestamp in results:
-                    sock.sendall("%s.%s\t%s\t%d\n"
-                        % (self.prefix, metric, value, timestamp))
-                GraphiteListener.LOG.debug(
-                    "Sent metrics to %s:%s.", (self.address, self.port))
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.connect((self.address, int(self.port)))
+            for metric, value, timestamp in results:
+                sock.sendall("%s.%s\t%s\t%d\n"
+                    % (self.prefix, metric, value, timestamp))
+            GraphiteListener.LOG.debug(
+                "Sent metrics to %s:%s.", (self.address, self.port))
         except:
             GraphiteListener.LOG.exception(
                 "Failed to send metrics to %s:%s.", self.address, self.port)

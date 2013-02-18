@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-#import sys
-
+from __future__ import with_statement
 import daemon
 import lockfile
 import logging
