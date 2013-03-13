@@ -2,7 +2,7 @@
 
 from __future__ import with_statement
 import daemon
-import lockfile
+from lockfile.pidlockfile import PIDLockFile
 import logging
 from _listeners import LoggerListener, GraphiteListener
 from _trackermanager import TrackerManager
@@ -147,6 +147,6 @@ class App(object):
     def daemonize(self):
         with(daemon.DaemonContext(
             detach_process=True,
-            pidfile=lockfile.pidlockfile.PIDLockFile(
+            pidfile=PIDLockFile(
                 "/var/run/process-tracker.pid"))):
             self.run()

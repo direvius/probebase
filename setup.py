@@ -3,10 +3,10 @@ from distutils.core import setup
 setup(
     name="probebase",
     packages=["probebase"],
-    version="0.1.0",
+    version="0.1.1",
     description="Base for monitoring probe",
-    author="Alexey Lavrenuke",
-    author_email="direvius@gmail.com",
+    author="Alexey Lavrenuke (load testing)",
+    author_email="direvius@yandex-team.ru",
     url="https://github.com/direvius/probebase",
     keywords=["monitoring", "probe", "graphite"],
     classifiers=[
@@ -20,6 +20,9 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: System :: Monitoring",
         ],
+    install_requires=[
+        "lockfile"
+    ],
     long_description="""\
 Base for monitoring probe
 -------------------------
